@@ -1,0 +1,54 @@
+[build-system]
+# Defined by PEP 518:
+requires = [
+    # for version management
+    "setuptools>=45", "setuptools_scm[toml]>=6.2"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cytopix"
+authors = [
+    # In alphabetical order.
+    {name = "Paul Müller"},
+]
+maintainers = [
+    {name = "Paul Müller", email="dev@craban.de"},
+]
+description = "GUI for pixel-based manual segmentation of DC images"
+readme = "README.rst"
+requires-python = ">=3.10, <4"
+keywords = ["RT-DC", "deformability", "cytometry", "segmentation"]
+classifiers = [
+    'Operating System :: OS Independent',
+    'Programming Language :: Python :: 3',
+    'Topic :: Scientific/Engineering :: Visualization',
+    'Intended Audience :: Science/Research',
+]
+license = {text = "GPL version 3.0 or later"}
+dependencies = [
+    "dcnum>=0.25.7",
+    "h5py>=3.0.0, <4",
+    "numpy>=1.21, <3",  # CVE-2021-33430
+    "pillow",
+    "pyqt6",
+    "pyqtgraph",
+    "torch>=2.2",
+]
+dynamic = ["version"]
+
+[project.scripts]
+cytopix = "cytopix._main:main"
+
+[project.urls]
+source = "https://github.com/DC-Analysis/CytoPix"
+tracker = "https://github.com/DC-Analysis/CytoPix/issues"
+documentation = "https://cytopix.readthedocs.io/en/stable/"
+changelog = "https://cytopix.readthedocs.io/en/stable/sec_changelog.html"
+
+[tool.setuptools]
+py-modules = ["cytopix"]
+
+[tool.setuptools_scm]
+write_to = "cytopix/_version.py"
+version_scheme = "post-release"
