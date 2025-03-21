@@ -2,9 +2,7 @@ import pathlib
 from typing import Dict
 
 import dclab
-from dcevent.dc_segment import get_available_segmenters
-from dcevent.cli import task_process
-from dcnum.segm import MPOSegmenter, Segmenter
+from dcnum.segm import MPOSegmenter, Segmenter, get_available_segmenters
 import h5py
 import numpy as np
 import scipy.fftpack
@@ -28,12 +26,12 @@ class SegmentDisabled(MPOSegmenter):
 
 get_available_segmenters.cache_clear()
 _def_methods = get_available_segmenters()
-if "mlunetcpu" in _def_methods:
+if "torchmpo" in _def_methods:
     # only there if e.g. pytorch is available
-    DEFAULT_SEGMENTER_CLASS = _def_methods["mlunetcpu"]
+    DEFAULT_SEGMENTER_CLASS = _def_methods["torchmpo"]
 else:
     # Fallback segmenter
-    DEFAULT_SEGMENTER_CLASS = _def_methods["watershed"]
+    DEFAULT_SEGMENTER_CLASS = _def_methods["thresh"]
 
 
 class SegmentationSession:
@@ -129,13 +127,8 @@ class SegmentationSession:
         self.segm_kwargs = segmenter_kwargs
         if "model_file" in segmenter_kwargs:
             pass  # nothing to do here
-        elif hasattr(segmenter_class, "default_models"):
-            # determine default model
-            self.segm_kwargs["model_file"] = (
-                task_process.infer_ml_model_file_from_input(
-                    segmentation_method=segmenter_class.get_ppid_code(),
-                    data_path=self.path_rtdc,
-                    pixel_size=None))
+        else:
+            raise ValueError("No model specified")
 
         self.segm_class = segmenter_class
         self.segm = self.segm_class(**self.segm_kwargs)
