@@ -121,7 +121,7 @@
          <item>
           <widget class="QLabel" name="label_labels_available">
            <property name="text">
-            <string>1 a&lt;b&gt;2&lt;/b&gt; 3</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Frame Labels: 1 2 3&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>

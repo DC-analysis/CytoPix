@@ -46,7 +46,7 @@ class CytoPix(QtWidgets.QMainWindow):
         self.v1a = self.wid.addViewBox(row=1, col=0, lockAspect=True)
         self.v1a.setDefaultPadding(0)
 
-        self.pg_image = pg.ImageItem(np.arange(80*250).reshape((80, -1)))
+        self.pg_image = pg.ImageItem(np.arange(80 * 320).reshape((80, -1)))
 
         self.v1a.addItem(self.pg_image)
         self.v1a.disableAutoRange('xy')
@@ -55,7 +55,8 @@ class CytoPix(QtWidgets.QMainWindow):
         kern = np.array([[10]])
         self.pg_image.setDrawKernel(kern, mask=kern, center=(0, 0),
                                     mode=self.on_draw)
-        self.pg_image.setLevels([10])
+
+        self.pg_image.setLevels([1, 80*320])
 
         #: current visualization state:
         #: - 0: show labels with different colors
@@ -305,7 +306,8 @@ class CytoPix(QtWidgets.QMainWindow):
     def change_drawing_label(self):
         sender = self.sender()
         self.current_drawing_label = int(sender.key().toString())
-        self.update_plot()
+        self.ui.label_label_current.setText(
+            f"<b>{self.current_drawing_label}</b>")
 
     def get_labels_from_ui(self):
         return np.copy(self.labels) if self.labels is not None else None
@@ -429,7 +431,7 @@ class CytoPix(QtWidgets.QMainWindow):
                 labels=labels,
                 saturation=self.label_saturation,
                 ret_hues=True)
-            colab = "Current Labels: "
+            colab = "Frame Labels: "
             for ii, lid in enumerate(hues):
                 r, g, b = np.array(colorsys.hsv_to_rgb(hues[lid], 1, 1)) * 255
                 color = f"#{int(r):02x}{int(g):02x}{int(b):02x}"

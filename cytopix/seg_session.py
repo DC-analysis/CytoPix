@@ -127,8 +127,6 @@ class SegmentationSession:
         self.segm_kwargs = segmenter_kwargs
         if "model_file" in segmenter_kwargs:
             pass  # nothing to do here
-        else:
-            raise ValueError("No model specified")
 
         self.segm_class = segmenter_class
         self.segm = self.segm_class(**self.segm_kwargs)
