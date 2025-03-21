@@ -27,12 +27,15 @@ classifiers = [
 ]
 license = {text = "GPL version 3.0 or later"}
 dependencies = [
+    "dclab",
     "dcnum>=0.25.7",
     "h5py>=3.0.0, <4",
     "numpy>=1.21, <3",  # CVE-2021-33430
     "pillow",
     "pyqt6",
     "pyqtgraph",
+    "scikit-image",
+    "scipy",
     "torch>=2.2",
 ]
 dynamic = ["version"]

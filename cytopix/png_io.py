@@ -42,8 +42,8 @@ def png_files_to_dc(png_paths: list | str | pathlib.Path,
     logger.info(f"Loading {input_files} PNG files...")
 
     # Get a list of file names and file sizes
-    png_sizes = [ pp.st_size for pp in input_files ]
-    png_names = [ pp.name for pp in input_files ]
+    png_sizes = [pp.st_size for pp in input_files]
+    png_names = [pp.name for pp in input_files]
 
     # Compute a unique hash of the input files
     hasher = hashlib.md5()
@@ -93,6 +93,6 @@ def png_files_to_dc(png_paths: list | str | pathlib.Path,
                     hw.store_feature_chunk(
                         feat="image",
                         data=np.array(image_data),
-                        )
+                    )
                     image_data.clear()
                     data_size = 0

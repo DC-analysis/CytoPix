@@ -1,8 +1,6 @@
-import PyQt6
-
-
 class DevNull:
     """Effectively a file-like object for piping everything to nothing."""
+
     def write(self, *args, **kwargs):
         pass
 
