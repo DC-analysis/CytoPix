@@ -59,7 +59,7 @@
       <item>
        <widget class="QLabel" name="label_frame">
         <property name="text">
-         <string>20/100</string>
+         <string>--</string>
         </property>
        </widget>
       </item>
@@ -98,7 +98,7 @@
          <item>
           <widget class="QLabel" name="label_label_current">
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700; color:#00007f;&quot;&gt;2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700&quot;&gt;--&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>
@@ -121,7 +121,7 @@
          <item>
           <widget class="QLabel" name="label_labels_available">
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Frame Labels: 1 2 3&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Frame Labels: --&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>

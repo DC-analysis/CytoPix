@@ -329,6 +329,9 @@ class CytoPix(QtWidgets.QMainWindow):
 
     def on_draw(self, dk, image, mask, ss, ts, ev):
         """Called when the user draws"""
+        if not self.image:
+            self.logger.warning("No image data, not drawing")
+            return
         if not self.show_labels:
             return
         fill_holes = False
@@ -407,6 +410,9 @@ class CytoPix(QtWidgets.QMainWindow):
         However, since we are dealing with small images, anything
         to reduce the number of calls is premature optimization.
         """
+        if self.image is None:
+            self.logger.warning("Not updating plot, no data loaded")
+            return
         if self.subtract_bg:
             image = self.image - self.image_bg + 128
         else:
