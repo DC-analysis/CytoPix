@@ -289,7 +289,7 @@ class CytoPix(QtWidgets.QMainWindow):
             "closing_disk": False}
         }
         self.segses = seg_session.SegmentationSession(
-            path_rtdc=path,
+            path_dc=path,
             segmenter_class=segmenter_class,
             segmenter_kwargs=segmenter_kwargs)
         self.show_event(*self.segses.get_next_frame())
@@ -386,7 +386,7 @@ class CytoPix(QtWidgets.QMainWindow):
 
         if self.segses:
             totframes = len(self.segses.unique_frames)
-            self.ui.lineEdit_source.setText(str(self.segses.path_rtdc))
+            self.ui.lineEdit_source.setText(str(self.segses.path_dc))
             self.ui.lineEdit_session.setText(str(self.segses.path_session))
             self.ui.label_frame.setText(
                 f"{self.segses.current_index_unique + 1}/{totframes}"
