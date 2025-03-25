@@ -14,7 +14,7 @@ algorithms.
 Documentation
 -------------
 
-The documentation, is available at
+The documentation is available at
 `cytopix.readthedocs.io <https://cytopix.readthedocs.io>`__.
 
 
