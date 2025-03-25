@@ -52,7 +52,7 @@ class CytoPix(QtWidgets.QMainWindow):
         self.v1a.disableAutoRange('xy')
         self.v1a.autoRange()
 
-        kern = np.array([[10]])
+        kern = np.array([[0]])
         self.pg_image.setDrawKernel(kern, mask=kern, center=(0, 0),
                                     mode=self.on_draw)
 
@@ -348,9 +348,17 @@ class CytoPix(QtWidgets.QMainWindow):
         if self.image is None:
             self.logger.warning("No image data, not drawing")
             return
-        if self.show_labels is None:
+        elif self.show_labels is None:
             return
-        fill_holes = False
+
+        if hasattr(ev, "isFinish"):
+            # drag ended
+            finish = ev.isFinish()
+        else:
+            # only single click
+            finish = True
+
+        fill_holes = finish
         # Set the pixel value accordingly.
         mdf = ev.modifiers().value
         if mdf == (QtCore.Qt.Modifier.SHIFT | QtCore.Qt.Modifier.ALT).value:
@@ -363,12 +371,16 @@ class CytoPix(QtWidgets.QMainWindow):
             delete = mdf == QtCore.Qt.Modifier.SHIFT.value
             value = 0 if delete else self.current_drawing_label
             self.labels[ts] = value
-            if hasattr(ev, "isFinish"):
-                fill_holes = ev.isFinish()
-            else:
-                fill_holes = True
-        # inefficient, but no optimization necessary
-        self.update_plot(fill_holes=fill_holes)
+
+        if finish:
+            # redraw all labels
+            self.update_plot(fill_holes=fill_holes)
+        else:
+            # only draw white points where user dragged mouse
+            image_rgb = np.array(self.pg_image.image, dtype=int)
+            image_rgb[ts] = 250
+            image_rgb = np.array(np.clip(image_rgb, 0, 255), dtype=np.uint8)
+            self.update_plot(image_rgb=image_rgb, draw_labels=False)
 
     def saturation_minus(self):
         self.label_saturation -= .05
@@ -419,7 +431,7 @@ class CytoPix(QtWidgets.QMainWindow):
         self.update_plot()
 
     @QtCore.pyqtSlot()
-    def update_plot(self, fill_holes=False):
+    def update_plot(self, fill_holes=False, draw_labels=True, image_rgb=None):
         """Update plot in case visualization changed
 
         The number of calls to this function should be minimized.
@@ -434,7 +446,9 @@ class CytoPix(QtWidgets.QMainWindow):
         else:
             image = self.image
 
-        if self.show_labels:
+        if image_rgb is not None:
+            pass
+        elif self.show_labels and draw_labels:
             if self.vis_state == 0:
                 self.ui.widget_labels.setVisible(True)
                 labels = self.labels
@@ -448,7 +462,7 @@ class CytoPix(QtWidgets.QMainWindow):
                 if fill_holes:
                     labels = binary_fill_holes(labels)
             # draw RGB image
-            image_s, hues = colorize.colorize_image_with_labels(
+            image_rgb, hues = colorize.colorize_image_with_labels(
                 image,
                 labels=labels,
                 saturation=self.label_saturation,
@@ -469,7 +483,7 @@ class CytoPix(QtWidgets.QMainWindow):
 
         else:
             # draw grayscale image
-            image_s = image
+            image_rgb = image
 
         (rx1, rx2), (ry1, ry2) = np.array(self.v1a.viewRange(), dtype=int)
         cropped = image[slice(max(0, ry1), ry2), slice(max(0, rx1), rx2)]
@@ -485,7 +499,7 @@ class CytoPix(QtWidgets.QMainWindow):
             levelMode="mono"
         )
 
-        self.pg_image.setImage(image_s, **kwargs)
+        self.pg_image.setImage(image_rgb, **kwargs)
 
     @QtCore.pyqtSlot()
     def next_visualization(self):
