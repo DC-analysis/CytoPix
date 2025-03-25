@@ -331,10 +331,10 @@ class CytoPix(QtWidgets.QMainWindow):
 
     def on_draw(self, dk, image, mask, ss, ts, ev):
         """Called when the user draws"""
-        if not self.image:
+        if self.image is None:
             self.logger.warning("No image data, not drawing")
             return
-        if not self.show_labels:
+        if self.show_labels is None:
             return
         fill_holes = False
         # Set the pixel value accordingly.
