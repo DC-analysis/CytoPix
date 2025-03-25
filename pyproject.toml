@@ -17,7 +17,7 @@ maintainers = [
 ]
 description = "GUI for pixel-based manual segmentation of DC images"
 readme = "README.rst"
-requires-python = ">=3.10, <4"
+requires-python = ">=3.12, <4"
 keywords = ["RT-DC", "deformability", "cytometry", "segmentation"]
 classifiers = [
     'Operating System :: OS Independent',
