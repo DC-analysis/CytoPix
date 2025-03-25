@@ -215,8 +215,19 @@ class CytoPix(QtWidgets.QMainWindow):
                                     about_text)
 
     @QtCore.pyqtSlot()
-    def on_action_export_images(self):
-        raise NotImplementedError("Not implemented")
+    def on_action_export_images(self, path=None):
+        if path is None:
+            path = QtWidgets.QFileDialog.getExistingDirectory(
+                self,
+                "Select directory for PNG export",
+            )
+        if path:
+            png_io.dc_to_png_files(
+                dc_path=self.segses.path_dc,
+                png_dir=path,
+                export_labels=True,
+                indices=self.segses.get_labeled_indices(),
+            )
 
     @QtCore.pyqtSlot()
     def on_action_segment_png(self, path=None):

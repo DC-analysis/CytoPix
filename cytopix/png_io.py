@@ -4,13 +4,64 @@ import logging
 import os
 import pathlib
 
+import dclab
 from dcnum import write
 import h5py
 import numpy as np
 from PIL import Image
 
+from .seg_session import SegmentationSession
 
 logger = logging.getLogger(__name__)
+
+
+def dc_to_png_files(dc_path: pathlib.Path | str,
+                    png_dir: pathlib.Path | str,
+                    export_labels: bool = False,
+                    indices: np.ndarray = None,
+                    ):
+    """Export images from an .rtdc file to PNG
+
+    Parameters
+    ----------
+    dc_path: pathlib.Path
+        Input .rtdc file
+    png_dir: pathlib.Path
+        PNG files output directory
+    export_labels: bool
+        If specified, save uint8 label images alongside input images
+        (with additional `_label` stem suffix) using the .dcseg session file.
+    indices: np.ndarray
+        Only export images with given indices
+    """
+    dc_path = pathlib.Path(dc_path)
+    png_dir = pathlib.Path(png_dir)
+    png_dir.mkdir(exist_ok=True, parents=True)
+
+    if export_labels:
+        ses = SegmentationSession(dc_path)
+    else:
+        ses = None
+
+    with dclab.new_dataset(dc_path) as ds:
+
+        if indices is None:
+            indices = np.arange(len(ds))
+        digits = len(str(int(np.max(indices))))
+
+        for idx in indices:
+            im = Image.fromarray(ds["image"][idx])
+            im.save(png_dir / f"image_{str(idx).zfill(digits)}.png")
+            if ses is not None:
+                # store label image
+                frame = ds["frame"][idx]
+                larr = ses.get_labels(frame)
+                # normalize
+                # limit in case there are >255 labels
+                max_val = min(larr.max(), 255)
+                larr = np.array(larr / max_val * 255, dtype=np.uint8)
+                lim = Image.fromarray(larr)
+                lim.save(png_dir / f"image_{str(idx).zfill(digits)}_label.png")
 
 
 def png_files_to_dc(png_paths: list | str | pathlib.Path,

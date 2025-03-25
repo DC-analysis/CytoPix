@@ -193,6 +193,17 @@ class SegmentationSession:
                 labels = measure.label(mask, background=0)
         return labels
 
+    def get_labeled_indices(self):
+        """Return indices in `path_dc` that have been labeled"""
+        with h5py.File(self.path_session, "a") as h5:
+            processed = h5["events_processed"][:]
+
+        # We have to remove all indices that have not been procecces
+        indices = np.arange(len(processed))
+        used = np.ones_like(indices, dtype=bool)
+        used[np.isnan(processed)] = False
+        return indices[used]
+
     def get_next_frame(self):
         """Get the next unedited events (fallback to +1 if all were edited)"""
         if self.current_frame is None:
