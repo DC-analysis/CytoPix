@@ -96,7 +96,7 @@ def png_files_to_dc(png_paths: list | str | pathlib.Path,
     if not input_files:
         raise ValueError("No PNG files specified or found!")
 
-    logger.info(f"Loading {input_files} PNG files...")
+    logger.info(f"Loading {len(input_files)} PNG files...")
 
     # Get a list of file names and file sizes
     png_sizes = [pp.stat().st_size for pp in input_files]
@@ -109,11 +109,12 @@ def png_files_to_dc(png_paths: list | str | pathlib.Path,
     png_hash = hasher.hexdigest()
 
     # If the output file already exists, check whether the hashes match.
-    log_name = "logs/cytopix-png-files"
+    log_name = "cytopix-png-files"
     if dc_path.exists():
         file_matches = False
         with h5py.File(dc_path) as h5:
-            if log_name in h5 and h5[log_name].attrs["hash"] == png_hash:
+            if (log_name in h5["logs"]
+                    and h5["logs"][log_name].attrs["hash"] == png_hash):
                 # We can reuse this file
                 logger.info(f"Reusing existing file {dc_path}")
                 file_matches = True

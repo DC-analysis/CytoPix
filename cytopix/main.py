@@ -164,6 +164,9 @@ class CytoPix(QtWidgets.QMainWindow):
                 if pp.suffix in [".rtdc", ".dc"]:
                     self.on_action_segment_rtdc(pp)
                     break
+                elif pp.is_dir():
+                    self.on_action_segment_png(pp)
+                    break
 
     @QtCore.pyqtSlot(QtCore.QEvent)
     def dragEnterEvent(self, e):
@@ -243,9 +246,29 @@ class CytoPix(QtWidgets.QMainWindow):
             dc_path = path.with_name(path.name + ".rtdc")
             png_files = [p for p in path.glob("*.png")
                          if not p.name.endswith("_label.png")]
-            png_io.png_files_to_dc(png_files, dc_path)
-            # open session
-            self.open_session(dc_path)
+            try:
+                png_io.png_files_to_dc(png_files, dc_path)
+            except FileExistsError:
+                QtWidgets.QMessageBox.critical(
+                    self,
+                    "PNG session inconsistency",
+                    f"CytoPix detected an inconsistency while comparing the "
+                    f"PNG files in '{path}' and the .rtdc file generated "
+                    f"in a previous session.\n\n"
+                    f"This usually means that somebody modified the PNG files "
+                    f"or added/removed new files. This is a problem, because "
+                    f"CytoPix creates a static .rtdc file from these PNG "
+                    f"files.\n\n "
+                    f"To resolve this issue, you can either "
+                    f"\n- delete the file '{dc_path}' and its associated "
+                    f"session file '{dc_path.with_suffix('.dcseg').name}' "
+                    f"(This will destroy your previous session),"
+                    f"\n- restore the PNG directory to its previous state, or"
+                    f"\n- directly open '{dc_path}' instead."
+                )
+            else:
+                # open session
+                self.open_session(dc_path)
 
     @QtCore.pyqtSlot()
     def on_action_segment_rtdc(self, path=None):
