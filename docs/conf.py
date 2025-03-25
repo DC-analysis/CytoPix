@@ -17,7 +17,7 @@ with (pathlib.Path(__file__).parent.parent / "pyproject.toml").open("rb") as f:
     data = tomllib.load(f)
 authors = [a["name"] for a in data["project"]["authors"]]
 author = ", ".join(authors)
-copyright = '2023, ' + author
+copyright = '2025, ' + author
 release = cytopix.__version__
 
 # -- General configuration ---------------------------------------------------
