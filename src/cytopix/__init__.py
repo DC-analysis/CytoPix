@@ -1,4 +1,4 @@
-""" GUI for pixel-based manual segmentation of deformability cytometry images
+"""GUI for pixel-based manual segmentation of deformability cytometry images
 Copyright (C) 2025 Paul Müller
 
 This program is free software: you can redistribute it and/or modify it
