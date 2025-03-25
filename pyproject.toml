@@ -17,7 +17,7 @@ maintainers = [
 ]
 description = "GUI for pixel-based manual segmentation of DC images"
 readme = "README.rst"
-requires-python = ">=3.11, <4"
+requires-python = ">=3.12, <4"
 keywords = ["RT-DC", "deformability", "cytometry", "segmentation"]
 classifiers = [
     'Operating System :: OS Independent',
@@ -25,7 +25,7 @@ classifiers = [
     'Topic :: Scientific/Engineering :: Visualization',
     'Intended Audience :: Science/Research',
 ]
-license = {text = "GPL version 3.0 or later"}
+license = "GPL-3.0-or-later"
 dependencies = [
     "dclab",
     "dcnum>=0.25.7",
@@ -49,9 +49,6 @@ tracker = "https://github.com/DC-Analysis/CytoPix/issues"
 documentation = "https://cytopix.readthedocs.io/en/stable/"
 changelog = "https://cytopix.readthedocs.io/en/stable/sec_changelog.html"
 
-[tool.setuptools]
-py-modules = ["cytopix"]
-
 [tool.setuptools_scm]
-write_to = "cytopix/_version.py"
+write_to = "src/cytopix/_version.py"
 version_scheme = "post-release"

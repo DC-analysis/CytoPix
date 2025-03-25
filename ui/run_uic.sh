@@ -10,7 +10,7 @@ do
     filename=$(basename -- "$f")
     outname="${filename%.*}_ui.py"
     # disable flake8 for these files
-    echo "# flake8: noqa" > "./cytopix/${outname}"
+    echo "# flake8: noqa" > "./src/cytopix/${outname}"
     # populate the file
-    pyuic6 $f >> "./cytopix/${outname}"
+    pyuic6 $f >> "./src/cytopix/${outname}"
 done
