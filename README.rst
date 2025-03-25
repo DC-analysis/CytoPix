@@ -48,16 +48,16 @@ Please cite CytoPix either in-line
 
 ::
 
-  (...) using the postprocessing software CytoPix version X.X.X
+  (...) using the pixel-based segmentation software CytoPix version X.X.X
   (available at https://github.com/DC-analysis/CytoPix).
 
 or in a bibliography
 
 ::
 
-  Paul Müller and others (2025), CytoPix version X.X.X: Postprocessing
-  software for deformability cytometry [Software]. Available at
-  https://github.com/DC-analysis/CytoPix.
+  Paul Müller and others (2025), CytoPix version X.X.X: Pixel-based
+  manual segmentation of deformability cytometry images [Software].
+  Available at https://github.com/DC-analysis/CytoPix.
 
 and replace ``X.X.X`` with the version of CytoPix that you used.
 
