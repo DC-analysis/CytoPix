@@ -233,14 +233,17 @@ class CytoPix(QtWidgets.QMainWindow):
     def on_action_segment_png(self, path=None):
         """Open a dialog to load a directory of PNG files"""
         if path is None:
-            path, _ = QtWidgets.QFileDialog.getOpenDirectoryName(
+            path = QtWidgets.QFileDialog.getExistingDirectory(
                 self,
-                'Select directory of PNG images',
-                '')
+                'Select directory containing PNG images',
+                )
         if path:
+            path = pathlib.Path(path)
             # convert directory of PNG images to .rtdc
             dc_path = path.with_name(path.name + ".rtdc")
-            png_io.png_files_to_dc(path, dc_path)
+            png_files = [p for p in path.glob("*.png")
+                         if not p.name.endswith("_label.png")]
+            png_io.png_files_to_dc(png_files, dc_path)
             # open session
             self.open_session(dc_path)
 

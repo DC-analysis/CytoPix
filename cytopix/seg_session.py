@@ -137,6 +137,16 @@ class SegmentationSession:
                     self._complete = True
         return self._complete
 
+    def get_image_bg(self, frame: int):
+        """Return background image"""
+        index = self.get_index(frame)
+        if "image_bg" in self.ds:
+            image_bg = self.ds["image_bg"][index]
+        else:
+            image_bg = np.full(self.ds["image"].shape[1:],
+                               np.median(self.ds["image"][index]))
+        return image_bg
+
     def get_event(self,
                   frame: int,
                   event_in_frame: int = 0):
@@ -144,10 +154,7 @@ class SegmentationSession:
         frame = int(frame)
         index = self.get_index(frame)
         image = self.ds["image"][index]
-        if "image_bg" in self.ds:
-            image_bg = self.ds["image_bg"][index]
-        else:
-            image_bg = np.median(image)
+        image_bg = self.get_image_bg(frame)
         # get the already-processed contour, otherwise the original one
         mask = self.get_mask(frame, event_in_frame)
         self.current_frame = frame
@@ -181,7 +188,7 @@ class SegmentationSession:
                 # retrieve image with optional background correction
                 if self.segm_class.requires_background_correction:
                     image = (np.array(self.ds["image"][index], dtype=int)
-                             - self.ds["image_bg"][index])
+                             - self.get_image_bg(frame))
                 else:
                     image = self.ds["image"][index]
                 mask = self.segm_func(image)

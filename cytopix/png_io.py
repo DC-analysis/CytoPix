@@ -3,6 +3,7 @@ import hashlib
 import logging
 import os
 import pathlib
+import itertools
 
 import dclab
 from dcnum import write
@@ -88,12 +89,17 @@ def png_files_to_dc(png_paths: list | str | pathlib.Path,
             input_files += path.rglob("*.png", case_sensitive=False)
         else:
             input_files += [png_paths]
+    else:
+        input_files += list(png_paths)
     input_files = sorted(input_files)
+
+    if not input_files:
+        raise ValueError("No PNG files specified or found!")
 
     logger.info(f"Loading {input_files} PNG files...")
 
     # Get a list of file names and file sizes
-    png_sizes = [pp.st_size for pp in input_files]
+    png_sizes = [pp.stat().st_size for pp in input_files]
     png_names = [pp.name for pp in input_files]
 
     # Compute a unique hash of the input files
@@ -128,22 +134,27 @@ def png_files_to_dc(png_paths: list | str | pathlib.Path,
             )
             log_ds.attrs["hash"] = png_hash
 
-            # store the image data to the output file
-            image_data = []
-            data_size = 0
-            for ii in range(len(input_files)):
-                im = np.array(Image.open(input_files[ii]), dtype=np.uint8)
-                if len(im.shape) == 3:
-                    # convert RGB to grayscale by taking the red channel
-                    im = im[:, :, 0]
-                data_size += im.size
-                image_data.append(im)
+            num_images = len(input_files)
+            hw.store_feature_chunk(
+                feat="frame",
+                data=np.arange(1, num_images+1),
+            )
 
-                # write buffered images to output
-                if data_size > 25_600_000:  # ~24 MB
-                    hw.store_feature_chunk(
-                        feat="image",
-                        data=np.array(image_data),
-                    )
-                    image_data.clear()
-                    data_size = 0
+            # store the image data to the output file
+            image_size = Image.open(input_files[0]).size
+            chunk_size = hw.get_best_nd_chunks(item_shape=image_size,
+                                               feat_dtype=np.uint8)[0]
+
+            for indices in itertools.batched(range(num_images), chunk_size):
+                image_data = []
+                for ii in indices:
+                    im = np.array(Image.open(input_files[ii]), dtype=np.uint8)
+                    if len(im.shape) == 3:
+                        # convert RGB to grayscale by taking the red channel
+                        im = im[:, :, 0]
+                    image_data.append(im)
+                # store the image chunk
+                hw.store_feature_chunk(
+                    feat="image",
+                    data=np.array(image_data, dtype=np.uint8),
+                )
