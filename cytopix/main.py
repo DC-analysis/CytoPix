@@ -283,10 +283,12 @@ class CytoPix(QtWidgets.QMainWindow):
 
     def open_session(self, path):
         segmenter_class = get_available_segmenters()["thresh"]
-        segmenter_kwargs = {"kwargs_mask": {
-            "clear_border": False,  # for training, we need all events
-            "fill_holes": True,
-            "closing_disk": False}
+        segmenter_kwargs = {
+            "kwargs_mask": {
+                "clear_border": False,  # for training, we need all events
+                "fill_holes": True,
+                "closing_disk": 1
+            }
         }
         self.segses = seg_session.SegmentationSession(
             path_dc=path,
