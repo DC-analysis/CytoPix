@@ -1,4 +1,6 @@
-0.1·3
+0.1.4
+ - build: do not pin mahotas
+0.1.3
  - build: add Windows and macOS installers
 0.1.2
  - fix: disable native menubar on macOS

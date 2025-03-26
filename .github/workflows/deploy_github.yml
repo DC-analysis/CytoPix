@@ -30,8 +30,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install setuptools wheel twine
-        # https://github.com/luispedro/mahotas/issues/144
-        pip install mahotas==1.4.13
         pip install .
         # Install CPU versions of torch (smaller file size)
         pip install torch==2.3.1 torchvision==0.18.1 -f https://download.pytorch.org/whl/cpu/torch/
