@@ -72,12 +72,12 @@ Testing
     pytest tests
 
 
-.. |CytoPix| image:: https://raw.github.com/DC-analysis/CytoPix/master/docs/artwork/cytopix_splash.png
+.. |CytoPix| image:: https://raw.github.com/DC-analysis/CytoPix/main/docs/artwork/cytopix_splash.png
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/CytoPix.svg
    :target: https://pypi.python.org/pypi/CytoPix
 .. |Build Status| image:: https://img.shields.io/github/actions/workflow/status/DC-analysis/CytoPix/check.yml
    :target: https://github.com/DC-analysis/CytoPix/actions?query=workflow%3AChecks
-.. |Coverage Status| image:: https://img.shields.io/codecov/c/github/DC-analysis/CytoPix/master.svg
+.. |Coverage Status| image:: https://img.shields.io/codecov/c/github/DC-analysis/CytoPix/main.svg
    :target: https://codecov.io/gh/DC-analysis/CytoPix
 .. |Docs Status| image:: https://img.shields.io/readthedocs/cytopix
    :target: https://readthedocs.org/projects/cytopix/builds/
