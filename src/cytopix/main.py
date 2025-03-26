@@ -41,6 +41,9 @@ class CytoPix(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        # Disable native menu bar (e.g. on macOS)
+        self.ui.menubar.setNativeMenuBar(False)
+
         self.wid = self.ui.graphics_widget
 
         self.v1a = self.wid.addViewBox(row=1, col=0, lockAspect=True)
