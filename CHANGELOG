@@ -1,3 +1,5 @@
+0.1.5
+ - setup: remove unused code from windows spec file
 0.1.4
  - build: do not pin mahotas
 0.1.3
