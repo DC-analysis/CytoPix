@@ -268,7 +268,7 @@ class Ui_MainWindow(object):
         self.label_20.setText(_translate("MainWindow", "**B**"))
         self.label_9.setText(_translate("MainWindow", "Visualization"))
         self.label_22.setText(_translate("MainWindow", "**C**"))
-        self.label_8.setText(_translate("MainWindow", "**Shift + Alt +Click**"))
+        self.label_8.setText(_translate("MainWindow", "**Shift + Alt + Click**"))
         self.label_3.setText(_translate("MainWindow", "**Controls**"))
         self.label_5.setText(_translate("MainWindow", "Current drawing label"))
         self.label_6.setText(_translate("MainWindow", "**Mouse click (and drag)**"))
