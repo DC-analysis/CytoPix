@@ -8,7 +8,6 @@ import traceback
 import webbrowser
 
 from dcnum.meta import paths as dcnum_paths
-from dcnum.segm import get_available_segmenters
 import numpy as np
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtGui import QKeySequence, QShortcut
@@ -320,7 +319,7 @@ class CytoPix(QtWidgets.QMainWindow):
                     segmenter = "otsu"
                 else:
                     segmenter = None
-                self.open_session(dc_path)
+                self.open_session(dc_path, segmenter=segmenter)
 
     @QtCore.pyqtSlot()
     def on_action_segment_rtdc(self, path=None):
