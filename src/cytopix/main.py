@@ -114,37 +114,72 @@ class CytoPix(QtWidgets.QMainWindow):
 
         cwid = self.centralWidget()
 
-        # Shortcuts
-        # Keyboard shortcuts
-        # navigate next
-        self.shortcut_next = QShortcut(QKeySequence('Right'), cwid)
-        self.shortcut_next.activated.connect(self.goto_next)
-        # navigate previous
-        self.shortcut_prev = QShortcut(QKeySequence('Left'), cwid)
-        self.shortcut_prev.activated.connect(self.goto_prev)
-        # hide mask
-        self.shortcut_toggle_cont = QShortcut(QKeySequence('Space'), cwid)
-        self.shortcut_toggle_cont.activated.connect(self.toggle_mask)
-        # visualization state
-        self.shortcut_toggle_vis = QShortcut(QKeySequence('V'), cwid)
-        self.shortcut_toggle_vis.activated.connect(self.next_visualization)
-        # auto-contrast
-        self.shortcut_toggle_contr = QShortcut(QKeySequence('C'), cwid)
-        self.shortcut_toggle_contr.activated.connect(self.toggle_contrast)
-        # background correction
-        self.shortcut_toggle_bg = QShortcut(QKeySequence('B'), cwid)
-        self.shortcut_toggle_bg.activated.connect(self.toggle_background)
-        # Current label
+        # Buttons and Shortcuts
+
+        # eraser mode
+        self._eraser_mode = False
+        self.ui.pushButton_eraser.toggled.connect(self.on_toggle_eraser)
+
+        # mask removal mode
+        self._mask_removal_mode = False
+        self.ui.pushButton_remove_mask.toggled.connect(
+            self.on_toggle_remove_mask)
+
+        # drawing label selection
         self.shortcuts_label = []
         for ii in range(1, 10):
             sci = QShortcut(QKeySequence(str(ii)), cwid)
-            sci.activated.connect(self.change_drawing_label)
+            sci.activated.connect(self.on_change_drawing_label)
             self.shortcuts_label.append(sci)
+            self.ui.comboBox_label.addItem(str(ii), ii)
+        self.ui.comboBox_label.currentIndexChanged.connect(
+            self.on_change_drawing_label)
+
+        # navigate next
+        self.shortcut_next = QShortcut(QKeySequence('Right'), cwid)
+        self.shortcut_next.activated.connect(self.goto_next)
+        self.ui.pushButton_frame_next.clicked.connect(self.goto_next)
+
+        # navigate previous
+        self.shortcut_prev = QShortcut(QKeySequence('Left'), cwid)
+        self.shortcut_prev.activated.connect(self.goto_prev)
+        self.ui.pushButton_frame_prev.clicked.connect(self.goto_prev)
+
+        # hide mask
+        self.shortcut_toggle_cont = QShortcut(QKeySequence('Space'), cwid)
+        self.shortcut_toggle_cont.activated.connect(
+            self.ui.pushButton_hide_mask.toggle)
+        self.ui.pushButton_hide_mask.toggled.connect(self.on_toggle_mask)
+
+        # visualization state
+        self.shortcut_toggle_vis = QShortcut(QKeySequence('V'), cwid)
+        self.shortcut_toggle_vis.activated.connect(self.next_visualization)
+        self.ui.comboBox_visualization.addItem("labels", 0)
+        self.ui.comboBox_visualization.addItem("flattened mask", 1)
+        self.ui.comboBox_visualization.currentIndexChanged.connect(
+            self.on_visualization)
+
+        # background correction
+        self.shortcut_toggle_bg = QShortcut(QKeySequence('B'), cwid)
+        self.shortcut_toggle_bg.activated.connect(
+            self.ui.pushButton_background.toggle)
+        self.ui.pushButton_background.toggled.connect(
+            self.on_toggle_background)
+
+        # auto-contrast
+        self.shortcut_toggle_contr = QShortcut(QKeySequence('C'), cwid)
+        self.shortcut_toggle_contr.activated.connect(
+            self.ui.pushButton_autocontrast.toggle)
+        self.ui.pushButton_autocontrast.toggled.connect(
+            self.on_toggle_contrast)
+
         # Label saturation
         self.shortcut_plus = QShortcut(QKeySequence('.'), cwid)
         self.shortcut_plus.activated.connect(self.saturation_plus)
+        self.ui.pushButton_sat_up.clicked.connect(self.saturation_plus)
         self.shortcut_minus = QShortcut(QKeySequence('-'), cwid)
         self.shortcut_minus.activated.connect(self.saturation_minus)
+        self.ui.pushButton_sat_down.clicked.connect(self.saturation_minus)
 
         # if "--version" was specified, print the version and exit
         if "--version" in arguments:
@@ -345,11 +380,17 @@ class CytoPix(QtWidgets.QMainWindow):
         event.accept()
 
     @QtCore.pyqtSlot()
-    def change_drawing_label(self):
+    def on_change_drawing_label(self):
         sender = self.sender()
-        self.current_drawing_label = int(sender.key().toString())
-        self.ui.label_label_current.setText(
-            f"<b>{self.current_drawing_label}</b>")
+        if sender is self.ui.comboBox_label:
+            self.current_drawing_label = sender.currentData()
+            self.ui.label_label_current.setText(
+                f"<b>{self.current_drawing_label}</b>")
+        else:
+            # trigger combobox with shortcut
+            new_label = int(sender.key().toString())
+            idx = self.ui.comboBox_label.findData(new_label)
+            self.ui.comboBox_label.setCurrentIndex(idx)
 
     def get_labels_from_ui(self):
         return np.copy(self.labels) if self.labels is not None else None
@@ -387,14 +428,15 @@ class CytoPix(QtWidgets.QMainWindow):
         fill_holes = finish
         # Set the pixel value accordingly.
         mdf = ev.modifiers().value
-        if mdf == (QtCore.Qt.Modifier.SHIFT | QtCore.Qt.Modifier.ALT).value:
+        if (mdf == (QtCore.Qt.Modifier.SHIFT | QtCore.Qt.Modifier.ALT).value
+                or self._mask_removal_mode):
             # delete the mask at that location
             segmentation.flood_fill(self.labels,
                                     seed_point=(ts[0].start, ts[1].start),
                                     new_value=0,
                                     in_place=True)
         else:
-            delete = mdf == QtCore.Qt.Modifier.SHIFT.value
+            delete = self._eraser_mode or mdf == QtCore.Qt.Modifier.SHIFT.value
             value = 0 if delete else self.current_drawing_label
             self.labels[ts] = value
 
@@ -447,14 +489,26 @@ class CytoPix(QtWidgets.QMainWindow):
             )
 
     @QtCore.pyqtSlot()
-    def toggle_background(self):
+    def on_toggle_background(self):
         self.subtract_bg = not self.subtract_bg
         self.update_plot()
 
     @QtCore.pyqtSlot()
-    def toggle_contrast(self):
+    def on_toggle_contrast(self):
         self.auto_contrast = not self.auto_contrast
         self.update_plot()
+
+    @QtCore.pyqtSlot()
+    def on_toggle_eraser(self):
+        self._eraser_mode = not self._eraser_mode
+        if self._eraser_mode:
+            self.ui.pushButton_remove_mask.setChecked(False)
+
+    @QtCore.pyqtSlot()
+    def on_toggle_remove_mask(self):
+        self._mask_removal_mode = not self._mask_removal_mode
+        if self._mask_removal_mode:
+            self.ui.pushButton_eraser.setChecked(False)
 
     @QtCore.pyqtSlot()
     def update_plot(self, fill_holes=False, draw_labels=True, image_rgb=None):
@@ -529,11 +583,17 @@ class CytoPix(QtWidgets.QMainWindow):
 
     @QtCore.pyqtSlot()
     def next_visualization(self):
-        self.vis_state = (self.vis_state + 1) % 2
+        vis_state = (self.vis_state + 1) % 2
+        idx = self.ui.comboBox_visualization.findData(vis_state)
+        self.ui.comboBox_visualization.setCurrentIndex(idx)
+
+    @QtCore.pyqtSlot()
+    def on_visualization(self):
+        self.vis_state = self.ui.comboBox_visualization.currentData()
         self.update_plot()
 
     @QtCore.pyqtSlot()
-    def toggle_mask(self):
+    def on_toggle_mask(self):
         self.show_labels = not self.show_labels
         self.update_plot()
 

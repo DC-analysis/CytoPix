@@ -1,3 +1,5 @@
+0.2.0
+ - feat: add buttons for controlling annotation tools
 0.1.5
  - setup: remove unused code from windows spec file
 0.1.4

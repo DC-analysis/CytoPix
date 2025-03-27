@@ -156,24 +156,92 @@
     <item>
      <widget class="QWidget" name="widget" native="true">
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="5" column="1">
-        <widget class="QLabel" name="label_13">
+       <item row="10" column="0">
+        <widget class="QPushButton" name="pushButton_background">
          <property name="text">
-          <string>Show previous/next image frame</string>
+          <string>Background correction</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
-       <item row="9" column="0">
-        <widget class="QLabel" name="label_20">
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_7">
          <property name="text">
-          <string>**B**</string>
+          <string>Create or edit a mask. Holes are filled automatically</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QPushButton" name="pushButton_frame_prev">
+           <property name="text">
+            <string>Previous frame</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_frame_next">
+           <property name="text">
+            <string>Next frame</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="4" column="0">
+        <widget class="QPushButton" name="pushButton_remove_mask">
+         <property name="text">
+          <string>Remove an entire mask</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_15">
+         <property name="text">
+          <string>Zoom in/out</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="0">
+        <widget class="QPushButton" name="pushButton_autocontrast">
+         <property name="text">
+          <string>Auto contrast</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLabel" name="label_10">
+         <property name="text">
+          <string>Numbers (**1**, **2**, **3**, **4**, **5**, **6**, **7**, **8**, or **9**)</string>
          </property>
          <property name="textFormat">
           <enum>Qt::TextFormat::MarkdownText</enum>
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
+       <item row="3" column="1">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>**Shift + Click (and drag)**</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::TextFormat::MarkdownText</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
         <widget class="QLabel" name="label_12">
          <property name="text">
           <string>Arrow keys (**← Left** or **→ Right**)</string>
@@ -184,64 +252,6 @@
         </widget>
        </item>
        <item row="8" column="1">
-        <widget class="QLabel" name="label_19">
-         <property name="text">
-          <string>Cycle through label visualization modes</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1">
-        <widget class="QLabel" name="label_15">
-         <property name="text">
-          <string>Zoom in/out</string>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="0">
-        <widget class="QLabel" name="label_22">
-         <property name="text">
-          <string>**C**</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::TextFormat::MarkdownText</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_8">
-         <property name="text">
-          <string>**Shift + Alt +Click**</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::TextFormat::MarkdownText</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QLabel" name="label_11">
-         <property name="text">
-          <string>Change the current drawing label color</string>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="1">
-        <widget class="QLabel" name="label_23">
-         <property name="text">
-          <string>Toggle auto contrast</string>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="0">
-        <widget class="QLabel" name="label_24">
-         <property name="text">
-          <string>&quot;**.**&quot; (dot) and &quot;**-**&quot; (dash)</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::TextFormat::MarkdownText</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0">
         <widget class="QLabel" name="label_16">
          <property name="text">
           <string>**Space**</string>
@@ -251,31 +261,27 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_4">
+       <item row="8" column="0">
+        <widget class="QPushButton" name="pushButton_hide_mask">
          <property name="text">
-          <string>**Shift + Click (and drag)**</string>
+          <string>Hide the mask data</string>
          </property>
-         <property name="textFormat">
-          <enum>Qt::TextFormat::MarkdownText</enum>
+         <property name="checkable">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
-       <item row="11" column="1">
-        <widget class="QLabel" name="label_25">
+       <item row="3" column="0">
+        <widget class="QPushButton" name="pushButton_eraser">
          <property name="text">
-          <string>Modify label color saturation</string>
+          <string>Eraser mode (remove label pixels)</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
-       <item row="9" column="1">
-        <widget class="QLabel" name="label_21">
-         <property name="text">
-          <string>Toggle background correction (if available)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="0">
+       <item row="2" column="1">
         <widget class="QLabel" name="label_14">
          <property name="text">
           <string>**Mouse wheel** or **Right-Click (and drag)**</string>
@@ -285,65 +291,113 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_6">
+       <item row="12" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <item>
+          <widget class="QPushButton" name="pushButton_sat_down">
+           <property name="text">
+            <string>Decrease saturation</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_sat_up">
+           <property name="text">
+            <string>Increase saturation</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_27">
          <property name="text">
-          <string>**Click (and drag)**</string>
+          <string>**Shortcut**</string>
          </property>
          <property name="textFormat">
           <enum>Qt::TextFormat::MarkdownText</enum>
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
-        <widget class="QLabel" name="label_5">
+       <item row="10" column="1">
+        <widget class="QLabel" name="label_20">
          <property name="text">
-          <string>Remove pixels from a mask</string>
+          <string>**B**</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::TextFormat::MarkdownText</enum>
          </property>
         </widget>
        </item>
-       <item row="7" column="1">
-        <widget class="QLabel" name="label_17">
+       <item row="9" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>Visualization</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboBox_visualization"/>
+         </item>
+        </layout>
+       </item>
+       <item row="11" column="1">
+        <widget class="QLabel" name="label_22">
          <property name="text">
-          <string>Temporarily hide the mask data</string>
+          <string>**C**</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::TextFormat::MarkdownText</enum>
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
-        <widget class="QLabel" name="label_9">
+       <item row="4" column="1">
+        <widget class="QLabel" name="label_8">
          <property name="text">
-          <string>Remove an entire mask</string>
+          <string>**Shift + Alt +Click**</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::TextFormat::MarkdownText</enum>
          </property>
         </widget>
        </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label_3">
          <property name="text">
-          <string>**Shortcuts**</string>
+          <string>**Controls**</string>
          </property>
          <property name="textFormat">
           <enum>Qt::TextFormat::MarkdownText</enum>
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_10">
-         <property name="text">
-          <string>Numbers (**1**, **2**, **3**, **4**, **5**, **6**, or **7**)</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::TextFormat::MarkdownText</enum>
-         </property>
-        </widget>
+       <item row="5" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Current drawing label</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboBox_label"/>
+         </item>
+        </layout>
        </item>
        <item row="1" column="1">
-        <widget class="QLabel" name="label_7">
+        <widget class="QLabel" name="label_6">
          <property name="text">
-          <string>Create or edit a mask. Holes are filled automatically</string>
+          <string>**Mouse click (and drag)**</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::TextFormat::MarkdownText</enum>
          </property>
         </widget>
        </item>
-       <item row="8" column="0">
+       <item row="9" column="1">
         <widget class="QLabel" name="label_18">
          <property name="text">
           <string>**V**</string>
@@ -353,7 +407,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="2">
+       <item row="1" column="3">
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Orientation::Horizontal</enum>
@@ -365,6 +419,16 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="12" column="1">
+        <widget class="QLabel" name="label_24">
+         <property name="text">
+          <string>&quot;**.**&quot; (dot) and &quot;**-**&quot; (dash)</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::TextFormat::MarkdownText</enum>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
