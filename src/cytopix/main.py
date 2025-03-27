@@ -114,6 +114,15 @@ class CytoPix(QtWidgets.QMainWindow):
 
         cwid = self.centralWidget()
 
+        # segmentation algorithm
+        self.ui.comboBox_segmenter.addItem("Threshold", "thresh")
+        self.ui.comboBox_segmenter.addItem("Otsu", "otsu")
+        self.ui.comboBox_segmenter.addItem("Disabled", "disabled")
+        self.ui.comboBox_segmenter.currentIndexChanged.connect(
+            self.on_choose_segmenter)
+        self.ui.spinBox_thresh.valueChanged.connect(
+            self.on_choose_segmenter)
+
         # Buttons and Shortcuts
 
         # eraser mode
@@ -306,6 +315,11 @@ class CytoPix(QtWidgets.QMainWindow):
                 )
             else:
                 # open session
+                if self.ui.comboBox_segmenter.currentData() == "thresh":
+                    # threshold segmenter does not work with PNG files
+                    segmenter = "otsu"
+                else:
+                    segmenter = None
                 self.open_session(dc_path)
 
     @QtCore.pyqtSlot()
@@ -356,19 +370,11 @@ class CytoPix(QtWidgets.QMainWindow):
         self.save_labels()
         QtCore.QCoreApplication.quit()
 
-    def open_session(self, path):
-        segmenter_class = get_available_segmenters()["thresh"]
-        segmenter_kwargs = {
-            "kwargs_mask": {
-                "clear_border": False,  # for training, we need all events
-                "fill_holes": True,
-                "closing_disk": 1
-            }
-        }
-        self.segses = seg_session.SegmentationSession(
-            path_dc=path,
-            segmenter_class=segmenter_class,
-            segmenter_kwargs=segmenter_kwargs)
+    def open_session(self, path, segmenter=None):
+        self.segses = seg_session.SegmentationSession(path_dc=path)
+        if segmenter is not None:
+            idx = self.ui.comboBox_segmenter.findData(segmenter)
+            self.ui.comboBox_segmenter.setCurrentIndex(idx)
         self.show_event(*self.segses.get_next_frame())
         # give graphics widget mouse/event focus
         self.wid.setFocus()
@@ -487,6 +493,17 @@ class CytoPix(QtWidgets.QMainWindow):
             self.ui.label_frame.setText(
                 f"{self.segses.current_index_unique + 1}/{totframes}"
             )
+
+    @QtCore.pyqtSlot()
+    def on_choose_segmenter(self):
+        segm = self.ui.comboBox_segmenter.currentData()
+        self.ui.widget_segm_threshold.setVisible(segm == "thresh")
+        if segm == "thresh":
+            kwargs = {"thresh": self.ui.spinBox_thresh.value()}
+        else:
+            kwargs = None
+        self.segses.set_segmenter(segmenter=segm,
+                                  segmenter_kwargs=kwargs)
 
     @QtCore.pyqtSlot()
     def on_toggle_background(self):

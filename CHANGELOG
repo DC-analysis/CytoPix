@@ -1,5 +1,8 @@
 0.2.0
  - feat: add buttons for controlling annotation tools
+ - feat: add Otsu segmenter for PNG files
+ - feat: allow to disable segmenter
+ - ref: add method `SegmentationSession.set_segmenter`
 0.1.5
  - setup: remove unused code from windows spec file
 0.1.4

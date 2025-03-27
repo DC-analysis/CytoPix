@@ -8,6 +8,7 @@ import h5py
 import numpy as np
 
 from skimage import measure
+from skimage import filters
 
 
 logger = logging.getLogger(__name__)
@@ -24,6 +25,28 @@ class SegmentDisabled(MPOSegmenter):
 
     def segment_algorithm(self, image):
         return np.zeros_like(image, dtype=bool)
+
+
+class SegmentOtsu(MPOSegmenter):
+    requires_background_correction = False
+    mask_postprocessing = True
+    mask_default_kwargs = {
+        "clear_border": False,
+        "fill_holes": False,
+        "closing_disk": 2,
+    }
+
+    def segment_algorithm(self, image):
+        val = filters.threshold_otsu(image)
+        labels = measure.label(image < val)
+
+        # remove masks that touch both sides (channel walls)
+        left = set(list(np.unique(labels[:, 0])))
+        right = set(list(np.unique(labels[:, -1])))
+        walls = left.intersection(right)
+        for ll in walls:
+            labels[ll] = 0
+        return labels > 0
 
 
 get_available_segmenters.cache_clear()
@@ -93,14 +116,12 @@ class SegmentationSession:
         self.current_event_in_frame = 0
 
         # figure out how we want to do mask processing
-        self.segm_kwargs = segmenter_kwargs or {}
+        self.segm_kwargs = None
+        self.segm_class = None
+        self.segm = None
+        self.segm_func = None
 
-        self.segm_class = segmenter_class
-        self.segm = self.segm_class(**self.segm_kwargs)
-        self.segm_func = self.segm.segment_algorithm_wrapper()
-
-        logger.info(f"Segmenter class is: {self.segm_class}")
-        logger.info(f"Segmenter kwargs: {self.segm_kwargs}")
+        self.set_segmenter(segmenter_class, segmenter_kwargs)
 
     def __len__(self):
         """Number of events in the original .rtdc dataset"""
@@ -235,6 +256,20 @@ class SegmentationSession:
         image, image_bg, _, _ = self.get_event(frame)
         labels = self.get_labels(frame)
         return image, image_bg, labels, frame
+
+    def set_segmenter(self, segmenter, segmenter_kwargs=None):
+        if isinstance(segmenter, str):
+            segmenter_class = _def_methods[segmenter]
+        else:
+            segmenter_class = segmenter
+
+        self.segm_kwargs = segmenter_kwargs or {}
+        self.segm_class = segmenter_class
+        self.segm = self.segm_class(**self.segm_kwargs)
+        self.segm_func = self.segm.segment_algorithm_wrapper()
+
+        logger.info(f"Segmenter class is: {self.segm_class}")
+        logger.info(f"Segmenter kwargs: {self.segm_kwargs}")
 
     def invalidate_frame(self, frame: int):
         """That particular image cannot be processed"""
