@@ -73,7 +73,7 @@ def png_files_to_dc(png_paths: list | str | pathlib.Path,
     ----------
     png_paths:
         List of PNG files or a directory containing PNG files.
-        If a directory is specified, then it is search for PNG files
+        If a directory is specified, then it is searched for PNG files
         recursively.
     dc_path:
         Path to an .rtdc file that is created from the .png files.

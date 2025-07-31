@@ -6,7 +6,7 @@
 #define MyzmAppName "CytoPix"
 #define MyAppVersion "0.1.0"
 #define MyAppPublisher "MPL"
-#define MyAppURL "https://mpl.mpg.de"
+#define MyAppURL "https://dc-cosmos.org"
 #define MyAppPlatform "win32"
 #define MyAppExeName "CytoPix.exe"
 #define MyAppDir = SourcePath + "dist\CytoPix\"
