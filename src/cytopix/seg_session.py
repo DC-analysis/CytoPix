@@ -215,7 +215,7 @@ class SegmentationSession:
                 mask = self.segm_func(image)
                 # perform optional mask postprocessing
                 if self.segm_class.mask_postprocessing:
-                    mask = self.segm_class.process_mask(
+                    mask = self.segm_class.process_labels(
                         mask, **self.segm.kwargs_mask)
                 # label the masks
                 labels = measure.label(mask, background=0)
