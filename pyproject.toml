@@ -49,6 +49,9 @@ tracker = "https://github.com/DC-Analysis/CytoPix/issues"
 documentation = "https://cytopix.readthedocs.io/en/stable/"
 changelog = "https://cytopix.readthedocs.io/en/stable/sec_changelog.html"
 
+[tool.setuptools]
+packages = ["cytopix"]
+
 [tool.setuptools_scm]
 write_to = "src/cytopix/_version.py"
 version_scheme = "post-release"
