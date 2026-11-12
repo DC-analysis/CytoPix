@@ -53,7 +53,7 @@ changelog = "https://cytopix.readthedocs.io/en/stable/sec_changelog.html"
 packages = ["cytopix"]
 
 [tool.setuptools_scm]
-write_to = "src/cytopix/_version.py"
+write_to = "cytopix/_version.py"
 version_scheme = "post-release"
 
 [tool.ruff.lint]
